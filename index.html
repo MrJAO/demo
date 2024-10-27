@@ -31,16 +31,17 @@
         .tab {
             padding: 10px;
             cursor: pointer;
-            border: 1px solid #007bff;
+            border: 1px solid #28a745; /* Green border */
             border-radius: 5px;
             flex-grow: 1;
             text-align: center;
-            background-color: #f0f0f0;
+            background-color: #f0f0f0; /* Light background */
+            color: #28a745; /* Green text */
         }
 
         .tab.active {
-            background-color: #007bff;
-            color: white;
+            background-color: #28a745; /* Green background for active tab */
+            color: white; /* White text for active tab */
         }
 
         .tab-content {
@@ -76,4 +77,103 @@
         #transaction-history {
             margin-top: 20px;
             max-height: 200px;
-      
+            overflow-y: auto;
+        }
+
+        #history-list {
+            list-style-type: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Demo DEX</h1>
+        <div class="tabs">
+            <div class="tab active" data-tab="swap">Swap</div>
+            <div class="tab" data-tab="limit">Limit</div>
+            <div class="tab" data-tab="dca">DCA</div>
+            <div class="tab" data-tab="va">VA</div>
+        </div>
+        <div class="tab-content active" id="swap">
+            <div class="swap-container">
+                <label for="token-from">From:</label>
+                <select id="token-from">
+                    <option value="USDC">USDC</option>
+                    <option value="SOL">SOL</option>
+                </select>
+                <input type="number" id="amount-from" placeholder="Amount" />
+            </div>
+            <div class="swap-container">
+                <label for="token-to">To:</label>
+                <select id="token-to">
+                    <option value="SOL">SOL</option>
+                    <option value="USDC">USDC</option>
+                </select>
+                <input type="number" id="amount-to" placeholder="Amount" readonly />
+            </div>
+            <button id="swap-button">Swap</button>
+            <div id="transaction-history">
+                <h2>Transaction History</h2>
+                <ul id="history-list"></ul>
+            </div>
+        </div>
+        <div class="tab-content" id="limit">
+            <h2>Limit Orders</h2>
+            <p>Limit orders functionality will be here.</p>
+        </div>
+        <div class="tab-content" id="dca">
+            <h2>DCA</h2>
+            <p>Dollar-Cost Averaging functionality will be here.</p>
+        </div>
+        <div class="tab-content" id="va">
+            <h2>Value Averaging</h2>
+            <p>Value Averaging functionality will be here.</p>
+        </div>
+    </div>
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                // Hide all tab contents
+                tabContents.forEach(tc => tc.classList.remove('active'));
+
+                // Set the clicked tab as active
+                tab.classList.add('active');
+                // Show the corresponding tab content
+                const tabContent = document.getElementById(tab.dataset.tab);
+                tabContent.classList.add('active');
+            });
+        });
+
+        // Swap button functionality
+        document.getElementById('swap-button').addEventListener('click', function() {
+            const tokenFrom = document.getElementById('token-from').value;
+            const tokenTo = document.getElementById('token-to').value;
+            const amountFrom = document.getElementById('amount-from').value;
+
+            if (!amountFrom || amountFrom <= 0) {
+                alert("Please enter a valid amount to swap.");
+                return;
+            }
+
+            // Simulate conversion rates (e.g., 1 USDC = 0.02 SOL)
+            const conversionRate = tokenFrom === "USDC" ? 0.02 : 50; // 50 USDC for 1 SOL
+            const amountTo = (amountFrom * conversionRate).toFixed(4);
+
+            document.getElementById('amount-to').value = amountTo;
+
+            // Record the transaction in history
+            const historyList = document.getElementById('history-list');
+            const newTransaction = document.createElement('li');
+            newTransaction.textContent = `Swapped ${amountFrom} ${tokenFrom} for ${amountTo} ${tokenTo}`;
+            historyList.appendChild(newTransaction);
+        });
+    </script>
+</body>
+</html>
